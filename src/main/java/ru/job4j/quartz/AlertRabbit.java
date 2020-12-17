@@ -18,7 +18,7 @@ public class AlertRabbit {
             scheduler.start();
             JobDetail job = newJob(Rabbit.class).build();
             SimpleScheduleBuilder times = simpleSchedule()
-                    .withIntervalInSeconds(10)
+                    .withIntervalInSeconds(timeInterval())
                     .repeatForever();
             Trigger trigger = newTrigger()
                     .startNow()
@@ -44,7 +44,7 @@ public class AlertRabbit {
 
     public static class Rabbit implements Job {
         @Override
-        public void execute(JobExecutionContext context) throws JobExecutionException {
+        public void execute(JobExecutionContext context) {
             System.out.println("Rabbit runs here ...");
         }
     }
