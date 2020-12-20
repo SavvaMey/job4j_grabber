@@ -17,11 +17,13 @@ public class ParsePost {
         Element jDescription = jData.select(".msgBody").last();
         Element jAuthor = jData.select(".msgBody").first();
         Elements jDate = jData.select(".msgFooter");
+        Elements jNameVac = jData.select(".messageHeader");
         Date date = ParseDateRu.getDateFromRusFormat(Arrays.stream(jDate.text().split(" "))
                 .limit(4).collect(Collectors.joining(" ")), "d MMM yy HH:mm");
         String description = jDescription.text();
         String author = jAuthor.text().split(" ")[0];
-        return new Post(description, author, link, date);
+        String nameVac = jNameVac.text();
+        return new Post(description, author, link, date, nameVac);
     }
 
     public static void main(String[] args) throws IOException {
