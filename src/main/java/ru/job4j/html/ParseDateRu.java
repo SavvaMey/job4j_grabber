@@ -32,6 +32,7 @@ public class ParseDateRu {
 
     public static Date getDateFromRusFormat(String dateStr, String pattern) {
         SimpleDateFormat formatter = new SimpleDateFormat(pattern, rusDateFormatSymbols);
+        dateStr = dateStr.replace(",", "");
         try {
             if (dateStr.contains("сегодня")) {
                 return today();
@@ -50,8 +51,8 @@ public class ParseDateRu {
             Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
             Elements date = doc.select(".altCol");
             for (int k = 7; k < date.size(); k += 2) {
-                System.out.println(getDateFromRusFormat(date.get(k).text().replace(
-                        ",", ""), "d MMM yy HH:mm"));
+                System.out.println(getDateFromRusFormat(
+                        date.get(k).text(), "d MMM yy HH:mm"));
             }
         }
     }
