@@ -46,12 +46,13 @@ public class ParseDateRu {
     }
 
     public static void main(String[] args) throws Exception {
-
-        Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers").get();
-        Elements date = doc.select(".altCol");
-        for (int i = 7; i < date.size(); i += 2) {
-            System.out.println(getDateFromRusFormat(date.get(i).text().replace(
-                    ",", ""), "d MMM yy HH:mm"));
+        for (int i = 1; i <= 5; i++) {
+            Document doc = Jsoup.connect("https://www.sql.ru/forum/job-offers/" + i).get();
+            Elements date = doc.select(".altCol");
+            for (int k = 7; k < date.size(); k += 2) {
+                System.out.println(getDateFromRusFormat(date.get(k).text().replace(
+                        ",", ""), "d MMM yy HH:mm"));
+            }
         }
     }
 }
