@@ -1,5 +1,6 @@
 package ru.job4j.grabber;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
@@ -7,19 +8,15 @@ import java.util.List;
 import java.util.Properties;
 
 public class PsqlStore implements Store, AutoCloseable {
-    private Connection cn;
+    private final Connection cn;
 
-    public void init() {
-        try (InputStream in = PsqlStore.class.getClassLoader()
-                .getResourceAsStream("app.properties")) {
-            Properties config = new Properties();
-            config.load(in);
+    public PsqlStore(Properties config) {
+        try {
             Class.forName(config.getProperty("driver-class-name"));
             cn = DriverManager.getConnection(
                     config.getProperty("url"),
                     config.getProperty("username"),
-                    config.getProperty("password")
-            );
+                    config.getProperty("password"));
         } catch (Exception e) {
             throw new IllegalStateException(e);
         }
@@ -72,7 +69,7 @@ public class PsqlStore implements Store, AutoCloseable {
                 "SELECT * FROM post WHERE id=?")) {
             statement.setInt(1, Integer.parseInt(id));
             try (ResultSet resultSet = statement.executeQuery()) {
-                while (resultSet.next()) {
+                if (resultSet.next()) {
                     item.setNameVac(resultSet.getString(2));
                     item.setDescription(resultSet.getString(3));
                     item.setLink(resultSet.getString(4));
@@ -87,20 +84,26 @@ public class PsqlStore implements Store, AutoCloseable {
     }
 
     public static void main(String[] args) {
-            PsqlStore psqlStore = new PsqlStore();
-            psqlStore.init();
-            Post postOne = new Post("java",
-                    "требуются разработчики", "hh.ru#1", new java.util.Date());
-            Post postSecond = new Post("java",
+        Properties cfg = new Properties();
+        try (InputStream in = PsqlStore.class.getClassLoader()
+                .getResourceAsStream("app.properties")) {
+            cfg.load(in);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        PsqlStore psqlStore = new PsqlStore(cfg);
+        Post postOne = new Post("java",
+                "требуются разработчики", "hh.ru#1", new java.util.Date());
+        Post postSecond = new Post("java",
                 "требуются тестеры", "hh.ru#2", new java.util.Date());
-            Post postThird = new Post("C",
+        Post postThird = new Post("C",
                 "требуются embedded", "hh.ru#3", new java.util.Date());
-            psqlStore.save(postOne);
-            psqlStore.save(postSecond);
-            psqlStore.save(postThird);
-            List<Post> posts = psqlStore.getAll();
-            System.out.println(posts.size());
-            posts.forEach(System.out::println);
-            System.out.println(psqlStore.findById("1"));
+        psqlStore.save(postOne);
+        psqlStore.save(postSecond);
+        psqlStore.save(postThird);
+        List<Post> posts = psqlStore.getAll();
+        System.out.println(posts.size());
+        posts.forEach(System.out::println);
+        System.out.println(psqlStore.findById("1"));
     }
 }
