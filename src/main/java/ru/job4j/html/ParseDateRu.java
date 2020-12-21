@@ -22,6 +22,7 @@ public class ParseDateRu {
 
     private static Date yesterday() {
         final Calendar cal = Calendar.getInstance();
+        cal.add(Calendar.DATE, -1);
         return cal.getTime();
     }
 
