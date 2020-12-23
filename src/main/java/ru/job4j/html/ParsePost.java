@@ -30,7 +30,6 @@ public class ParsePost {
         String link = "https://www.sql.ru/forum/1325330/"
                 + "lidy-be-fe-senior-cistemnye-analitiki-qa-i-devops-moskva-do-200t";
         Post post = parse(link);
-        System.out.println(post);
     }
 
 }

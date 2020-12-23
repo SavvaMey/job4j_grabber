@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Properties;
 
@@ -50,11 +51,12 @@ public class PsqlStore implements Store, AutoCloseable {
         try (Statement statement = cn.createStatement();
              ResultSet resultSet = statement.executeQuery("SELECT * FROM post")) {
             while (resultSet.next()) {
-                Post item = new Post(resultSet.getString(2),
-                        resultSet.getString(3),
-                        resultSet.getString(4),
-                        resultSet.getDate(5));
-                items.add(item);
+                String nameVac = resultSet.getString(2);
+                String descr = resultSet.getString(3);
+                String link = resultSet.getString(4);
+                Timestamp timestamp = resultSet.getTimestamp(5);
+                Date date = new Date(timestamp.getTime());
+                items.add(new Post(nameVac, descr, link, date));
             }
         } catch (SQLException throwable) {
             throwable.printStackTrace();
@@ -73,7 +75,9 @@ public class PsqlStore implements Store, AutoCloseable {
                     item.setNameVac(resultSet.getString(2));
                     item.setDescription(resultSet.getString(3));
                     item.setLink(resultSet.getString(4));
-                    item.setDate(resultSet.getDate(5));
+                    Timestamp timestamp = resultSet.getTimestamp(5);
+                    Date date = new Date(timestamp.getTime());
+                    item.setDate(date);
                     return item;
                 }
             }
