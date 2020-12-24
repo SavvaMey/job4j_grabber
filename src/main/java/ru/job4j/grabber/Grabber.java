@@ -5,8 +5,10 @@ import org.quartz.impl.StdSchedulerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Properties;
+import java.util.Set;
 
 import static org.quartz.JobBuilder.newJob;
 import static org.quartz.SimpleScheduleBuilder.simpleSchedule;
@@ -58,8 +60,7 @@ public class Grabber implements Grab {
             Store store = (Store) map.get("store");
             Parse parse = (Parse) map.get("parse");
             List<Post> list = parse.list("https://www.sql.ru/forum/job-offers/");
-            System.out.println(list.get(0).getDate());
-            List<Post> itemsDB = store.getAll();
+            Set<Post> itemsDB = new HashSet<>(store.getAll());
             list.stream()
                     .filter(post -> !itemsDB.contains(post))
                     .forEach(store::save);

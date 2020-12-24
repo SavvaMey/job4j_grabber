@@ -50,24 +50,7 @@ public class Post {
     public void setNameVac(String nameVac) {
         this.nameVac = nameVac;
     }
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) {
-            return true;
-        }
-        if (o == null || getClass() != o.getClass()) {
-            return false;
-        }
-        Post post = (Post) o;
-        return Objects.equals(description, post.description)
-                && link.equals(post.link) && Objects.equals(date, post.date)
-                && Objects.equals(nameVac, post.nameVac);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(description, link, date, nameVac);
-    }
 
     @Override
     public String toString() {
@@ -77,5 +60,18 @@ public class Post {
                 + ", date=" + date
                 + ", nameVac='" + nameVac + '\''
                 + '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Post post = (Post) o;
+        return link.equals(post.link) && date.equals(post.date) && nameVac.equals(post.nameVac);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(link, date, nameVac);
     }
 }
